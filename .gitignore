@@ -1,0 +1,10 @@
+dlvenv
+*.pyc
+*.swp
+.DS_Store
+dev
+*.swo
+*.un~
+project_files/
+build/
+new_env/
