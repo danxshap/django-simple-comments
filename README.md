@@ -1,2 +1,1 @@
  # django-simple-comments
- =======================
