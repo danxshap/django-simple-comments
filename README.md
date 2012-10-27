@@ -1,2 +1,2 @@
- django-simple-comments
+ # django-simple-comments
  =======================
