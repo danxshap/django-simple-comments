@@ -1,4 +1,5 @@
-# from django.contrib.comments.signals import comment_will_be_posted
+import importlib
+
 from django.contrib.auth.decorators import login_required  
 from django.views.decorators.http import require_POST 
 from django.shortcuts import get_object_or_404, redirect
@@ -36,7 +37,17 @@ def delete(request):
     else:
         raise Http404
 
-def comment_posted_message(sender, comment, request, **kwargs):
-    messages.success(request, 'Your comment has been posted!')
+def after_comment_has_been_posted(sender, comment, request, **kwargs):
+    """
+    Function to run when the comments app fires the comment_was_posted signal.
+    Can be configured to run some function called "after_comment_has_been_posted"
+    defined by the user and in a module specified by the SIMPLE_COMMENTS_SIGNAL_MODULE setting
+    """
+    if hasattr(settings, 'SIMPLE_COMMENTS_SIGNAL_MODULE'):
+        signal_module = importlib.import_module(settings.SIMPLE_COMMENTS_SIGNAL_MODULE)
+        signal_module.after_comment_has_been_posted(sender, comment, request, **kwargs)
 
-comment_was_posted.connect(comment_posted_message)
+    else:
+        messages.success(request, 'Your comment has been posted!')
+
+comment_was_posted.connect(after_comment_has_been_posted)
